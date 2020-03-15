@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 module.exports = {
     // Creation of user
     create: (req, res, next) => {
+        console.log('register')
         userModel.create({
             name: req.body.name,
             email: req.body.email,
@@ -25,13 +26,12 @@ module.exports = {
     // Authentication on user login attempt
     authenticate: (req, res, next) => {
         userModel.findOne({
-            email: req.body.email,
-            password: req.body.password
+            email: req.body.email
         }, (err, userInfo) => {
             if (err) {
                 next (err)
             } else {
-                if (bcrypt.compareSync(req.body.email, userInfo.password)) {
+                if (bcrypt.compareSync(req.body.password, userInfo.password)) {
                     const token = jwt.sign({ id: userInfo._id }, req.app.get('secretKey'), { expiresIn: '1h' })
 
                     res.json({
